@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&display=swap');
+
+/* Khmer Wedding Money System - Dark Gold Theme */
+
+@layer base {
+  :root {
+    --background: 0 0% 8%;
+    --foreground: 45 30% 90%;
+
+    --card: 0 0% 12%;
+    --card-foreground: 45 30% 90%;
+
+    --popover: 0 0% 10%;
+    --popover-foreground: 45 30% 90%;
+
+    --primary: 43 74% 49%;
+    --primary-foreground: 0 0% 5%;
+
+    --secondary: 0 0% 18%;
+    --secondary-foreground: 45 30% 90%;
+
+    --muted: 0 0% 15%;
+    --muted-foreground: 45 10% 60%;
+
+    --accent: 43 74% 49%;
+    --accent-foreground: 0 0% 5%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+
+    --border: 43 30% 25%;
+    --input: 0 0% 18%;
+    --ring: 43 74% 49%;
+
+    --radius: 0.75rem;
+
+    --gold: 43 74% 49%;
+    --gold-light: 43 74% 65%;
+    --gold-dark: 43 74% 35%;
+  }
+
+  .dark {
+    --background: 0 0% 8%;
+    --foreground: 45 30% 90%;
+    --card: 0 0% 12%;
+    --card-foreground: 45 30% 90%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 45 30% 90%;
+    --primary: 43 74% 49%;
+    --primary-foreground: 0 0% 5%;
+    --secondary: 0 0% 18%;
+    --secondary-foreground: 45 30% 90%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 45 10% 60%;
+    --accent: 43 74% 49%;
+    --accent-foreground: 0 0% 5%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 43 30% 25%;
+    --input: 0 0% 18%;
+    --ring: 43 74% 49%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Battambang', cursive, sans-serif;
+  }
+
+  input, button, select, textarea {
+    font-family: 'Battambang', cursive, sans-serif;
+  }
+}
+
+@layer utilities {
+  .text-gold {
+    color: hsl(var(--gold));
+  }
+  
+  .bg-gold {
+    background-color: hsl(var(--gold));
+  }
+  
+  .border-gold {
+    border-color: hsl(var(--gold));
+  }
+}
