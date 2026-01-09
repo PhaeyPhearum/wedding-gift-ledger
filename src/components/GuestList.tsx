@@ -64,7 +64,7 @@ export const GuestList = memo(function GuestList({
         {guests.slice(0, 10).map((guest) => {
           const hasData = guest.amountRiel !== null && guest.amountRiel > 0;
           const isSelected = selectedId === guest.id;
-          const sideLabel = guest.side === "groom" ? "ប្រុស" : "ស្រី";
+          const sideLabel = guest.side === "groom" ? "ប្រុស 👦🏻" : "ស្រី 🌸";
           const displayName = guest.displayName || guest.name;
 
           return (
@@ -162,7 +162,7 @@ export const GuestList = memo(function GuestList({
                     onChange={() => setNewGuestSide("groom")}
                     className="w-4 h-4 accent-primary"
                   />
-                  <span>ភ្ញៀវខាងប្រុស</span>
+                  <span>🧑🏻ភ្ញៀវខាងប្រុស</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
@@ -172,7 +172,7 @@ export const GuestList = memo(function GuestList({
                     onChange={() => setNewGuestSide("bride")}
                     className="w-4 h-4 accent-primary"
                   />
-                  <span>ភ្ញៀវខាងស្រី</span>
+                  <span>👩🏻ភ្ញៀវខាងស្រី</span>
                 </label>
               </div>
             </div>
