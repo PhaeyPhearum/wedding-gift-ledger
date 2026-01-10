@@ -1,13 +1,13 @@
 import { useState, useMemo, useCallback } from "react";
-import { useGuestData } from "@/hooks/useGuestData";
+import { useDatabase } from "@/hooks/useDatabase";
 import { Header } from "@/components/Header";
 import { SearchBar } from "@/components/SearchBar";
 import { GuestList } from "@/components/GuestList";
 import { GuestForm } from "@/components/GuestForm";
 import { GuestTabs } from "@/components/GuestTabs";
-import { Button } from "@/components/ui/button";
+import { SyncStatus } from "@/components/SyncStatus";
+import { BackupActions } from "@/components/BackupActions";
 import { GuestRecord, BankInfo } from "@/types/guest";
-import { Download } from "lucide-react";
 
 const Index = () => {
   const {
@@ -18,8 +18,12 @@ const Index = () => {
     hasExistingData,
     totals,
     exportCSV,
+    exportJSON,
+    importJSON,
     isLoaded,
-  } = useGuestData();
+    syncState,
+    isOnline,
+  } = useDatabase();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedGuest, setSelectedGuest] = useState<GuestRecord | null>(null);
@@ -51,7 +55,7 @@ const Index = () => {
   }, []);
 
   const handleSave = useCallback(
-    (
+    async (
       guestId: string,
       amountRiel: number | null,
       paymentType: "cash" | "bank",
@@ -59,17 +63,22 @@ const Index = () => {
       note: string,
       displayName: string
     ) => {
-      saveGuest(guestId, amountRiel, paymentType, bank, note, displayName);
+      await saveGuest(guestId, amountRiel, paymentType, bank, note, displayName);
     },
     [saveGuest]
   );
 
   const handleCreateGuest = useCallback(
-    (name: string, side: "groom" | "bride") => {
-      const newGuest = createGuest(name, side);
-      // Return as GuestRecord with default values
+    async (name: string, side: "groom" | "bride"): Promise<GuestRecord> => {
+      const newGuest = await createGuest(name, side);
+      if (newGuest) {
+        return newGuest;
+      }
+      // Fallback if creation fails
       return {
-        ...newGuest,
+        id: `TEMP_${Date.now()}`,
+        name,
+        side,
         displayName: name,
         amountRiel: null,
         paymentType: "cash" as const,
@@ -103,6 +112,11 @@ const Index = () => {
       />
 
       <main className="max-w-2xl mx-auto px-4 py-4">
+        {/* Sync Status Indicator */}
+        <div className="flex justify-center mb-4">
+          <SyncStatus syncState={syncState} isOnline={isOnline} />
+        </div>
+
         {/* Search */}
         <div className="mb-4">
           <SearchBar value={searchQuery} onChange={setSearchQuery} />
@@ -140,16 +154,13 @@ const Index = () => {
           />
         )}
 
-        {/* Export Button */}
+        {/* Backup & Export Actions */}
         <div className="mt-6 pt-4 border-t border-border">
-          <Button
-            variant="secondary"
-            onClick={exportCSV}
-            className="w-full h-12"
-          >
-            <Download className="h-4 w-4 mr-2" />
-            Export CSV
-          </Button>
+          <BackupActions
+            onExportCSV={exportCSV}
+            onExportJSON={exportJSON}
+            onImportJSON={importJSON}
+          />
         </div>
       </main>
     </div>

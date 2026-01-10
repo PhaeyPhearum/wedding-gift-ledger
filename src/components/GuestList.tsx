@@ -20,7 +20,7 @@ interface GuestListProps {
   onSelect: (guest: GuestRecord) => void;
   selectedId: string | null;
   searchQuery: string;
-  onCreateGuest: (name: string, side: "groom" | "bride") => GuestRecord;
+  onCreateGuest: (name: string, side: "groom" | "bride") => Promise<GuestRecord>;
   showRecorded?: boolean;
 }
 
@@ -39,15 +39,21 @@ export const GuestList = memo(function GuestList({
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [newGuestName, setNewGuestName] = useState("");
   const [newGuestSide, setNewGuestSide] = useState<"groom" | "bride">("groom");
+  const [isCreating, setIsCreating] = useState(false);
 
   const noResults = guests.length === 0 && searchQuery.trim().length > 0;
 
-  const handleCreateGuest = () => {
-    if (!newGuestName.trim()) return;
-    const newGuest = onCreateGuest(newGuestName.trim(), newGuestSide);
-    setShowCreateDialog(false);
-    setNewGuestName("");
-    onSelect(newGuest as GuestRecord);
+  const handleCreateGuest = async () => {
+    if (!newGuestName.trim() || isCreating) return;
+    setIsCreating(true);
+    try {
+      const newGuest = await onCreateGuest(newGuestName.trim(), newGuestSide);
+      setShowCreateDialog(false);
+      setNewGuestName("");
+      onSelect(newGuest);
+    } finally {
+      setIsCreating(false);
+    }
   };
 
   if (guests.length === 0 && !searchQuery.trim()) {
@@ -162,7 +168,7 @@ export const GuestList = memo(function GuestList({
                     onChange={() => setNewGuestSide("groom")}
                     className="w-4 h-4 accent-primary"
                   />
-                  <span>🧑🏻ភ្ញៀវខាងប្រុស</span>
+                  <span>ភ្ញៀវខាងប្រុស</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
@@ -172,7 +178,7 @@ export const GuestList = memo(function GuestList({
                     onChange={() => setNewGuestSide("bride")}
                     className="w-4 h-4 accent-primary"
                   />
-                  <span>👩🏻ភ្ញៀវខាងស្រី</span>
+                  <span>ភ្ញៀវខាងស្រី</span>
                 </label>
               </div>
             </div>
@@ -182,8 +188,8 @@ export const GuestList = memo(function GuestList({
             <AlertDialogCancel className="bg-secondary border-border">
               បោះបង់
             </AlertDialogCancel>
-            <AlertDialogAction onClick={handleCreateGuest} disabled={!newGuestName.trim()}>
-              បង្កើត
+            <AlertDialogAction onClick={handleCreateGuest} disabled={!newGuestName.trim() || isCreating}>
+              {isCreating ? "កំពុងបង្កើត..." : "បង្កើត"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
